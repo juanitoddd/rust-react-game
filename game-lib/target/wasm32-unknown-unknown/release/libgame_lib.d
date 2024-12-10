@@ -1,1 +1,0 @@
-/home/juanddd/rust/game/game-lib/target/wasm32-unknown-unknown/release/libgame_lib.rlib: /home/juanddd/rust/game/game-lib/src/entities/grid.rs /home/juanddd/rust/game/game-lib/src/entities/mod.rs /home/juanddd/rust/game/game-lib/src/lib.rs /home/juanddd/rust/game/game-lib/src/macros.rs /home/juanddd/rust/game/game-lib/src/utils.rs

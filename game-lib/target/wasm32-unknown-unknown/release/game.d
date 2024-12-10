@@ -1,1 +1,0 @@
-/home/juanddd/rust/game/wasm-lib/target/wasm32-unknown-unknown/release/game.wasm: /home/juanddd/rust/game/wasm-lib/src/lib.rs /home/juanddd/rust/game/wasm-lib/src/macros.rs /home/juanddd/rust/game/wasm-lib/src/utils.rs
