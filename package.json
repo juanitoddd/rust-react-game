@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:cargo": "cd game-lib && cargo build --target wasm32-unknown-unknown",
     "build:wasm": "cd game-lib && wasm-pack build --target web --out-dir pkg",
     "update": "npm install ./game-lib/pkg",
     "lint": "eslint .",
