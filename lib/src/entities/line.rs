@@ -6,12 +6,15 @@ pub struct Line<'a> {
   b: &'a Point,
 }
 
-// impl Line {
-  // pub fn new(_a:Point, _b: Point) -> Self {
-  //     Line { a: _a, b: _b }
-  // }
+impl<'a> Line<'a> {  
 
-  // pub fn get_points(&self) -> (Point, Point) {
-  //   (self.a, self.b)
-  // }
-// }
+  /// Creates a new Line with two borrowed Points
+  pub fn new(a: &'a Point, b: &'a Point) -> Self {
+    Line { a, b }
+  }
+
+  /// Displays the line's points
+  pub fn display(&self) {
+    println!("Line: ({}, {}) to ({}, {})", self.a.x, self.a.y, self.b.x, self.b.y);
+  }  
+}

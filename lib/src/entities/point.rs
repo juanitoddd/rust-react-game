@@ -1,7 +1,9 @@
+use crate::entities::transformation::*;
+
 #[derive(Debug)]
 pub struct Point {
-  x: f64,
-  y: f64,    
+  pub x: f64,
+  pub y: f64,    
 }
 
 impl Point {
@@ -26,12 +28,10 @@ impl Point {
   }
 }
 
-// Implement Copy
-// impl Copy for Point {}
-
-// Implement Clone (required for Copy)
-// impl Clone for Point {
-//   fn clone(&self) -> Self {
-//       *self // Simply dereference `self` to copy the value
-//   }
-// }
+impl Transformation for Point {
+  fn transform(&self, matrix: &TransformMatrix) -> Self {
+      let x = self.x * matrix.matrix[0][0] + self.y * matrix.matrix[0][1] + matrix.matrix[0][2];
+      let y = self.x * matrix.matrix[1][0] + self.y * matrix.matrix[1][1] + matrix.matrix[1][2];
+      Point { x, y }
+  }
+}

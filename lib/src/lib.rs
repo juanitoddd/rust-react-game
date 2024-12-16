@@ -6,6 +6,7 @@ mod entities;
 // Game related
 use entities::grid::Grid;
 use entities::point::Point;
+use entities::line::Line;
 
 use std::f64;
 use wasm_bindgen::prelude::*;
@@ -107,23 +108,28 @@ pub fn start_game() {
   context.begin_path();
   context.set_line_width(1.0);
   
-  let x1 = Point::from_i32(width/2, 0);
-  let y1 = Point::from_i32(width/2, height);
+  let a1: Point = Point::from_i32(width/2, 0);
+  let b1: Point = Point::from_i32(width/2, height);
 
-  let x2 = Point::from_i32(0, height/2);
-  let y2 = Point::from_i32(width, height/2);
+  let a2 = Point::from_i32(0, height/2);
+  let b2 = Point::from_i32(width, height/2);
 
   // Draw the outer circle.
 //   context
 //       .arc(75.0, 75.0, 50.0, 0.0, f64::consts::PI * 2.0)
 //       .unwrap();
 
-  // Draw the mouth.
-  context.move_to(x1.get_coords().0, x1.get_coords().1);
-  context.line_to(y1.get_coords().0, y1.get_coords().1);
+  // Create a Line using borrowed references
+  let line = Line::new(&a1, &b1);
+  // Display the line
+  line.display();
 
-  context.move_to(x2.get_coords().0, x2.get_coords().1);
-  context.line_to(y2.get_coords().0, y2.get_coords().1);
+  // Draw the mouth.
+  context.move_to(a1.x, a1.y);
+  context.line_to(b1.x, b1.y);
+
+  context.move_to(a2.x, a2.y);
+  context.line_to(b2.x, b2.y);
 //   context.arc(75.0, 75.0, 35.0, 0.0, f64::consts::PI).unwrap();
 
   // Draw the left eye.
