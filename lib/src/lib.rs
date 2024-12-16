@@ -107,42 +107,25 @@ pub fn start_game() {
 
   context.begin_path();
   context.set_line_width(1.0);
-  
-  let a1: Point = Point::from_i32(width/2, 0);
-  let b1: Point = Point::from_i32(width/2, height);
 
-  let a2 = Point::from_i32(0, height/2);
-  let b2 = Point::from_i32(width, height/2);
+  let v1 = Point::from_i32(width/2, 0);
+  let v2 = Point::from_i32(width/2, height);
 
-  // Draw the outer circle.
-//   context
-//       .arc(75.0, 75.0, 50.0, 0.0, f64::consts::PI * 2.0)
-//       .unwrap();
+  let h1 = Point::from_i32(0, height/2);
+  let h2 = Point::from_i32(width, height/2);
 
-  // Create a Line using borrowed references
-  let line = Line::new(&a1, &b1);
+  // Create a line using the new function
+  let line_v = Line::new(v1, v2);
+  let line_h = Line::new(h1, h2);          
   // Display the line
-  line.display();
+  line_h.display();
 
   // Draw the mouth.
-  context.move_to(a1.x, a1.y);
-  context.line_to(b1.x, b1.y);
+  context.move_to(v1.clone().x, v1.clone().y);
+  context.line_to(v2.x, v2.y);
 
-  context.move_to(a2.x, a2.y);
-  context.line_to(b2.x, b2.y);
-//   context.arc(75.0, 75.0, 35.0, 0.0, f64::consts::PI).unwrap();
-
-  // Draw the left eye.
-//   context.move_to(65.0, 65.0);
-//   context
-//       .arc(60.0, 65.0, 5.0, 0.0, f64::consts::PI * 2.0)
-//       .unwrap();
-
-  // Draw the right eye.
-//   context.move_to(95.0, 65.0);
-//   context
-//       .arc(90.0, 65.0, 5.0, 0.0, f64::consts::PI * 2.0)
-//       .unwrap();
+  context.move_to(h1.x, h1.y);
+  context.line_to(h2.x, h2.y);
 
   context.stroke();  
 
