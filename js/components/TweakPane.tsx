@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import {Pane} from 'tweakpane';
-import { get_info, set_param } from '../../game-lib/pkg';
+import { get_info, set_param } from 'gamelib';
 
 function TweakPane() {   
   useEffect(() => {

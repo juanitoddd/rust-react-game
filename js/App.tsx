@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useWindowSize } from '@uidotdev/usehooks';
 import TweakPane from './components/TweakPane';
-import init, { start_game, greet } from '../game-lib/pkg';
+import init, { start_game, greet } from 'gamelib';
 import { Greeting } from './greeting.js'
 import './App.css'
 

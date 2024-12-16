@@ -1,3 +1,6 @@
 cargo build --target wasm32-unknown-unknown
 cargo install -f wasm-bindgen-cli
-wasm-bindgen --target web --out-dir pkg ./target/wasm32-unknown-unknown/debug/game.wasm
+
+npm run build:cargo
+npm run build:wasm # ---> wasm-pack build --target web --out-dir pkg
+npm run update:pkg # ---> npm install ./lib/pkg

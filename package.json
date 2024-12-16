@@ -6,15 +6,15 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:cargo": "cd game-lib && cargo build --target wasm32-unknown-unknown",
-    "build:wasm": "cd game-lib && wasm-pack build --target web --out-dir pkg",
-    "update": "npm install ./game-lib/pkg",
+    "build:cargo": "cd lib && cargo build --target wasm32-unknown-unknown",
+    "build:wasm": "cd lib && wasm-pack build --target web --out-dir pkg",
+    "update:pkg": "npm install ./lib/pkg",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@uidotdev/usehooks": "^2.4.1",
-    "game-lib": "file:game-lib/pkg",
+    "gamelib": "file:lib/pkg",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tweakpane": "^4.0.5"
