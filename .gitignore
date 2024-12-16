@@ -1,4 +1,5 @@
-/game-lib/target
+/lib/target
+/lib/pkg
 
 # Logs
 logs
