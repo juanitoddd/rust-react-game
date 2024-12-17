@@ -156,9 +156,6 @@ pub fn start_game() {
 
     Tile::new((-tile_size, -tile_size), (tile_size * 2, tile_size)).transform(&transform_matrix).render(&context);
 
-
-
-
     // let a = (100, 0);
     // let b = (-100, 0);
     // let c = (0, 100);
