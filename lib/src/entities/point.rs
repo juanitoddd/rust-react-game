@@ -26,12 +26,11 @@ impl Point {
   pub fn get_coords(&self) -> (f64, f64) {
     (self.x, self.y)    
   }
-}
 
-impl Transformation for Point {
-  fn transform(&self, matrix: &TransformMatrix) -> Self {
-      let x = self.x * matrix.matrix[0][0] + self.y * matrix.matrix[0][1] + matrix.matrix[0][2];
-      let y = self.x * matrix.matrix[1][0] + self.y * matrix.matrix[1][1] + matrix.matrix[1][2];
-      Point { x, y }
-  }
+  /// Transforms the coords using a matrix
+  pub fn transform(&self, matrix: &TransformMatrix) -> Self {
+    let x = self.x * matrix.matrix[0][0] + self.y * matrix.matrix[0][1] + matrix.matrix[0][2];
+    let y = self.x * matrix.matrix[1][0] + self.y * matrix.matrix[1][1] + matrix.matrix[1][2];
+    Point { x, y }
+}
 }

@@ -4,13 +4,14 @@ mod utils;
 mod entities;
 
 // Game related
-use entities::grid::Grid;
+use entities::{grid::Grid, transformation::TransformMatrix};
 use entities::point::Point;
 use entities::line::Line;
 
 use std::f64;
 use wasm_bindgen::prelude::*;
 use web_sys::js_sys::{Error, Reflect};
+use std::collections::HashMap;
 
 #[wasm_bindgen(raw_module = "../../js/greeting.js")]
 extern "C" {
@@ -79,10 +80,38 @@ pub fn main_js() -> Result<(), JsValue> {
 }
 
 #[wasm_bindgen]
-pub fn start_game() {
-  // Initialize the grid
-  let mut grid = Grid::new();
-  grid.print_grid();
+pub fn start_game() {  
+
+  let rotate = [[0.0, -1.0, 0.0],
+                                [1.0, 0.0, 0.0],
+                                [0.0, 0.0, 1.0]];
+
+  let skew = [[1.0, 1.5, 0.0],
+                              [0.5, 1.0, 0.0],
+                              [0.0, 0.0, 1.0]];
+
+  let translate = [[1.0, 0.0, 20.0],
+                                  [0.0, 1.0, 30.0],
+                                  [0.0, 0.0, 1.0]];
+
+  let iso = [[1.0, 1.5, 0.0],
+                            [0.5, 1.0, 0.0],
+                            [0.0, 0.0, 1.0]];
+
+  let mut trx: HashMap<String, [[f64; 3]; 3]> = HashMap::new();
+
+  let mut line_color = "#888";
+
+  #[wasm_bindgen]
+  pub fn set_line_color(param: String) {
+    log!("Param {:?}", param);
+    // line_color = param.to_string()
+  }
+  
+
+  trx.insert("translate".to_string(), translate);
+  trx.insert("rotate".to_string(), rotate);
+  trx.insert("skew".to_string(), skew);
 
   let document = web_sys::window().unwrap().document().unwrap();
   let canvas = document.get_element_by_id("canvas").unwrap();
@@ -102,32 +131,45 @@ pub fn start_game() {
       .dyn_into::<web_sys::CanvasRenderingContext2d>()
       .unwrap();      
 
-  // Clear canvas
-  context.clear_rect(0.0, 0.0, canvas.width().into(), canvas.height().into());
+    // Create grid
+  let render_grid = |color: &str| {
+    // Clear canvas
+    context.clear_rect(0.0, 0.0, canvas.width().into(), canvas.height().into());
+    context.begin_path();
+    context.set_line_width(1.0);
+    context.set_stroke_style_str(color);
+    
+      let v1 = Point::from_i32(width/2, 0);
+      let v2 = Point::from_i32(width/2, height);
+    
+      let h1 = Point::from_i32(0, height/2);
+      let h2 = Point::from_i32(width, height/2);
 
-  context.begin_path();
-  context.set_line_width(1.0);
+      // Create a line using the new function
+      let line_v = Line::new(v1, v2);
+      let line_h = Line::new(h1, h2);
+      
+      // Display the lines
+      line_v.render(&context);
+      line_h.render(&context);
+      
+      // Define a translation matrix
+      let translation_matrix = TransformMatrix {
+        matrix: trx["translate"]
+      };
+    
+      // Transform the line
+      let trx_line_h = line_h.transform(&translation_matrix);
+      let trx_line_v = line_v.transform(&translation_matrix);
+      
+      // Render  
+      trx_line_h.render(&context);
+      trx_line_v.render(&context);
+    
+      context.stroke();  
+  };
 
-  let v1 = Point::from_i32(width/2, 0);
-  let v2 = Point::from_i32(width/2, height);
-
-  let h1 = Point::from_i32(0, height/2);
-  let h2 = Point::from_i32(width, height/2);
-
-  // Create a line using the new function
-  let line_v = Line::new(v1, v2);
-  let line_h = Line::new(h1, h2);          
-  // Display the line
-  line_h.display();
-
-  // Draw the mouth.
-  context.move_to(v1.clone().x, v1.clone().y);
-  context.line_to(v2.x, v2.y);
-
-  context.move_to(h1.x, h1.y);
-  context.line_to(h2.x, h2.y);
-
-  context.stroke();  
+  render_grid(line_color);
 
   let closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {    
     let x = event.offset_x() as f64;
@@ -150,5 +192,10 @@ pub fn get_info() {
 
 #[wasm_bindgen]
 pub fn set_param(param: i8) {
+  log!("Param {:?}", param);
+}
+
+#[wasm_bindgen]
+pub fn set_color(param: String) {
   log!("Param {:?}", param);
 }

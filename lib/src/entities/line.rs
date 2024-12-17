@@ -1,3 +1,5 @@
+use web_sys::CanvasRenderingContext2d;
+
 use crate::entities::point::Point;
 use crate::entities::transformation::*;
   
@@ -16,17 +18,20 @@ impl Line {
 
   /// Displays the line's points
   pub fn display(&self) {
-    log!("Line: ({}, {}) to ({}, {})", self.a.x, self.a.y, self.b.x, self.b.y);
-    // println!("Line: ({}, {}) to ({}, {})", self.a.x, self.a.y, self.b.x, self.b.y);
-  }  
-}
+    log!("Line: ({}, {}) to ({}, {})", self.a.x, self.a.y, self.b.x, self.b.y);    
+  }
 
-// Implement the Transformation trait for Line
-impl Transformation for Line {
-  fn transform(&self, matrix: &TransformMatrix) -> Self {
-      Line {
-          a: self.a.transform(matrix),
-          b: self.b.transform(matrix),          
-      }
+  /// Transforms the line using a matrix
+  pub fn transform(&self, matrix: &TransformMatrix) -> Self {
+    Line {
+        a: self.a.transform(matrix),
+        b: self.b.transform(matrix),
+    }
+  }
+
+  pub fn render(&self, context: &CanvasRenderingContext2d) {
+    // log!("Line: ({}, {}) to ({}, {})", self.a.x, self.a.y, self.b.x, self.b.y);    
+    context.move_to(self.a.x, self.a.y);
+    context.line_to(self.b.x, self.b.y);
   }
 }
