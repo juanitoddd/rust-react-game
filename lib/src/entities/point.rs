@@ -1,4 +1,4 @@
-use crate::entities::transformation::*;
+use crate::entities::transformation::TransformMatrix;
 
 #[derive(Debug, Clone)]
 pub struct Point {
@@ -19,8 +19,21 @@ impl Point {
     Point { x: f64::from(_x), y: f64::from(_y) }
   }
 
-  fn display(&self) {
+  pub fn display(&self) {
     println!("Point({}, {})", self.x, self.y);
+  }
+
+  pub fn iso(_x:f64, _y: f64) -> Self {
+    let trx: [[f64; 3]; 3] = 
+      [[1.0, -1.0, 0.0],
+      [0.5, 0.5, 0.0],
+      [0.0, 0.0, 1.0]];
+    // Define a translation matrix
+    let transform_matrix = TransformMatrix {
+      matrix: trx
+    };
+    let trx_pt = Point::new(_x, _y).transform(&transform_matrix);    
+    Point { x: trx_pt.x, y: trx_pt.y }    
   }
 
   pub fn get_coords(&self) -> (f64, f64) {

@@ -7,6 +7,7 @@ mod entities;
 use entities::{grid::Grid, transformation::TransformMatrix};
 use entities::point::Point;
 use entities::line::Line;
+use entities::tile::Tile;
 
 use std::f64;
 use wasm_bindgen::prelude::*;
@@ -80,7 +81,9 @@ pub fn main_js() -> Result<(), JsValue> {
 }
 
 #[wasm_bindgen]
-pub fn start_game() {  
+pub fn start_game() {
+
+  let tile_size = 100;
 
   let rotate = [[0.0, -1.0, 0.0],
                                 [1.0, 0.0, 0.0],
@@ -92,11 +95,7 @@ pub fn start_game() {
 
   let translate = [[1.0, 0.0, 20.0],
                                   [0.0, 1.0, 30.0],
-                                  [0.0, 0.0, 1.0]];
-
-  let iso = [[1.0, 1.5, 0.0],
-                            [0.5, 1.0, 0.0],
-                            [0.0, 0.0, 1.0]];
+                                  [0.0, 0.0, 1.0]];  
 
   let mut trx: HashMap<String, [[f64; 3]; 3]> = HashMap::new();
 
@@ -118,7 +117,15 @@ pub fn start_game() {
   let width = canvas.client_width();
   let height = canvas.client_height();
   log!("canvas width {:?}", width);
-  log!("canvas height {:?}", height);
+  log!("canvas height {:?}", height);  
+
+  let center_matrix = [[1.0, 0.0, (width/2) as f64],
+                                  [0.0, 1.0, (height/2) as f64],
+                                  [0.0, 0.0, 1.0]];
+  let transform_matrix = TransformMatrix {
+    matrix: center_matrix
+  };
+
   let canvas: web_sys::HtmlCanvasElement = canvas
       .dyn_into::<web_sys::HtmlCanvasElement>()
       .map_err(|_| ())
@@ -139,34 +146,30 @@ pub fn start_game() {
     context.set_line_width(1.0);
     context.set_stroke_style_str(color);
     
-      let v1 = Point::from_i32(width/2, 0);
-      let v2 = Point::from_i32(width/2, height);
-    
-      let h1 = Point::from_i32(0, height/2);
-      let h2 = Point::from_i32(width, height/2);
+    Tile::new((0,0), (tile_size, tile_size)).transform(&transform_matrix).render(&context);
 
-      // Create a line using the new function
-      let line_v = Line::new(v1, v2);
-      let line_h = Line::new(h1, h2);
-      
-      // Display the lines
-      line_v.render(&context);
-      line_h.render(&context);
-      
-      // Define a translation matrix
-      let translation_matrix = TransformMatrix {
-        matrix: trx["translate"]
-      };
-    
-      // Transform the line
-      let trx_line_h = line_h.transform(&translation_matrix);
-      let trx_line_v = line_v.transform(&translation_matrix);
-      
-      // Render  
-      trx_line_h.render(&context);
-      trx_line_v.render(&context);
-    
-      context.stroke();  
+    Tile::new((tile_size, tile_size), (tile_size, tile_size)).transform(&transform_matrix).render(&context);
+
+    Tile::new((tile_size, 0), (tile_size, tile_size)).transform(&transform_matrix).render(&context);
+
+    Tile::new((0, tile_size), (tile_size, tile_size)).transform(&transform_matrix).render(&context);
+
+    Tile::new((-tile_size, -tile_size), (tile_size * 2, tile_size)).transform(&transform_matrix).render(&context);
+
+
+
+
+    // let a = (100, 0);
+    // let b = (-100, 0);
+    // let c = (0, 100);
+    // let d = (0, -100);
+    // // Create a line using the iso fn
+    // Line::iso(o, a).transform(&transform_matrix).render(&context);
+    // Line::iso(o, b).transform(&transform_matrix).render(&context);
+    // Line::iso(o, c).transform(&transform_matrix).render(&context);
+    // Line::iso(o, d).transform(&transform_matrix).render(&context);
+  
+    context.stroke();
   };
 
   render_grid(line_color);
@@ -174,15 +177,17 @@ pub fn start_game() {
   let closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {    
     let x = event.offset_x() as f64;
     let y = event.offset_y() as f64;
-    log!("x {:?}", x);
-    log!("y {:?}", y);
+    let pt = Point::iso(x, y);//.transform(&transform_matrix);
+    log!("x {:?}", pt.x);
+    log!("y {:?}", pt.y);
     // log!("Hello from {:?}", name());
     callback();
   }) as Box<dyn FnMut(_)>);
 
   canvas.add_event_listener_with_callback("mousedown", closure.as_ref().unchecked_ref())
     .unwrap();
-  closure.forget();
+  closure.forget();  
+
 }
 
 #[wasm_bindgen]
