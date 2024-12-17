@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import {Pane} from 'tweakpane';
-import { set_line_color } from 'gamelib';
+import { set_line_color, start_game } from 'gamelib';
 
 function TweakPane() {   
   useEffect(() => {    
@@ -16,12 +16,21 @@ function TweakPane() {
 
     // pane.addBinding(PARAMS, 'factor');
     // pane.addBinding(PARAMS, 'title');
+
+    // Color
     const colorPane = pane.addBinding(PARAMS, 'color');
     colorPane.on('change', (ev) => {
       console.log("🚀 ~ ev.value:", ev.value)
       set_line_color(ev.value);
-    }
-    )
+    })
+
+    const resetBtn = pane.addButton({
+      title: 'Reset',      
+    });
+    resetBtn.on('click', () => {
+      console.log("🚀 ~ Reset:")
+      start_game();
+    });
     // const b = pane.addBinding(
     //   PARAMS, 'percentage',
     //   {min: 0, max: 100, step: 10}

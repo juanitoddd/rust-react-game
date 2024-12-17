@@ -18,7 +18,7 @@ function App() {
     init().then(() => {
       if(!initialized) {
         greet("greeting", "greet")
-        start_game();                
+        start_game();           
         initialized = true;
       }
     })

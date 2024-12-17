@@ -14,7 +14,7 @@ use web_sys::js_sys::{Error, Reflect};
 use std::collections::HashMap;
 
 #[wasm_bindgen(raw_module = "../../js/greeting.js")]
-extern "C" {
+unsafe extern "C" {
 
     fn callback();
     fn name() -> String;
@@ -22,10 +22,10 @@ extern "C" {
     type Greeting;
 
     #[wasm_bindgen(constructor)]
-    fn new(msg: &str, recipient: &str) -> Greeting;
+    unsafe fn new(msg: &str, recipient: &str) -> Greeting;
 
     #[wasm_bindgen(method)]
-    fn greet(this: &Greeting);
+    unsafe fn greet(this: &Greeting);
 }
 
 fn extract_name(key: &JsValue) -> String {
