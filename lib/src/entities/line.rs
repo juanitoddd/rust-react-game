@@ -16,6 +16,12 @@ impl Line {
     Line { a, b }
   }
 
+  pub fn ortho(a: (i32, i32), b: (i32, i32)) -> Self {
+    let ortho_a = Point::from_i32(a.0, a.1);
+    let ortho_b = Point::from_i32(b.0, b.1);
+    Line { a: ortho_a, b: ortho_b }
+  }
+
   pub fn iso(a: (i32, i32), b: (i32, i32)) -> Self {
     let trx: [[f64; 3]; 3] = 
       [[1.0, -1.0, 0.0],

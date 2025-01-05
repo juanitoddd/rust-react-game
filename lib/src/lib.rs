@@ -84,33 +84,13 @@ pub fn main_js() -> Result<(), JsValue> {
 pub fn start_game() {
 
   let tile_size = 100;
-
-  let rotate = [[0.0, -1.0, 0.0],
-                                [1.0, 0.0, 0.0],
-                                [0.0, 0.0, 1.0]];
-
-  let skew = [[1.0, 1.5, 0.0],
-                              [0.5, 1.0, 0.0],
-                              [0.0, 0.0, 1.0]];
-
-  let translate = [[1.0, 0.0, 20.0],
-                                  [0.0, 1.0, 30.0],
-                                  [0.0, 0.0, 1.0]];  
-
-  let mut trx: HashMap<String, [[f64; 3]; 3]> = HashMap::new();
-
   let mut line_color = "#888";
 
   #[wasm_bindgen]
   pub fn set_line_color(param: String) {
     log!("Param {:?}", param);
     // line_color = param.to_string()
-  }
-  
-
-  trx.insert("translate".to_string(), translate);
-  trx.insert("rotate".to_string(), rotate);
-  trx.insert("skew".to_string(), skew);
+  }  
 
   let document = web_sys::window().unwrap().document().unwrap();
   let canvas = document.get_element_by_id("canvas").unwrap();
@@ -138,38 +118,45 @@ pub fn start_game() {
       .dyn_into::<web_sys::CanvasRenderingContext2d>()
       .unwrap();      
 
-    // Create grid
+  // Create grid
   let render_grid = |color: &str| {
     // Clear canvas
     context.clear_rect(0.0, 0.0, canvas.width().into(), canvas.height().into());
     context.begin_path();
     context.set_line_width(1.0);
-    context.set_stroke_style_str(color);
+    context.set_stroke_style_str(color);    
     
-    Tile::new((0,0), (tile_size, tile_size)).transform(&transform_matrix).render(&context);
+    let grid = Grid::iso((500,100), 5, 5, 50);
+    grid.render(&context);
 
-    Tile::new((tile_size, tile_size), (tile_size, tile_size)).transform(&transform_matrix).render(&context);
+    let grid2 = Grid::ortho((700,300), 5, 5, 50);
+    grid2.render(&context);
 
-    Tile::new((tile_size, 0), (tile_size, tile_size)).transform(&transform_matrix).render(&context);
+    // Tile::iso((0,0), (tile_size, tile_size)).transform(&transform_matrix).render(&context);
+    // Tile::iso((tile_size, tile_size), (tile_size, tile_size)).transform(&transform_matrix).render(&context);
+    // Tile::iso((tile_size, 0), (tile_size, tile_size)).transform(&transform_matrix).render(&context);
+    // Tile::iso((0, tile_size), (tile_size, tile_size)).transform(&transform_matrix).render(&context);      
+  
+    context.stroke();
+  };  
 
-    Tile::new((0, tile_size), (tile_size, tile_size)).transform(&transform_matrix).render(&context);
+  // Create minimap
+  let render_minimap = |color: &str| {
 
-    Tile::new((-tile_size, -tile_size), (tile_size * 2, tile_size)).transform(&transform_matrix).render(&context);
-
-    // let a = (100, 0);
-    // let b = (-100, 0);
-    // let c = (0, 100);
-    // let d = (0, -100);
-    // // Create a line using the iso fn
-    // Line::iso(o, a).transform(&transform_matrix).render(&context);
-    // Line::iso(o, b).transform(&transform_matrix).render(&context);
-    // Line::iso(o, c).transform(&transform_matrix).render(&context);
-    // Line::iso(o, d).transform(&transform_matrix).render(&context);
+    let minimap_tile_size = 50;
+    let minimap_origin = (200, 200);
+    
+    context.begin_path();
+    context.set_line_width(1.0);
+    context.set_stroke_style_str(color);    
+    
+    // Tile::new(minimap_origin, (minimap_tile_size, minimap_tile_size)).transform(&transform_matrix).render(&context);    
   
     context.stroke();
   };
 
   render_grid(line_color);
+  render_minimap(line_color);
 
   let closure = Closure::wrap(Box::new(move |event: web_sys::MouseEvent| {    
     let x = event.offset_x() as f64;

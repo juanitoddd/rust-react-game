@@ -1,4 +1,5 @@
 use web_sys::CanvasRenderingContext2d;
+// use crate::entities::point::Point;
 use crate::entities::line::Line;
 use crate::entities::transformation::TransformMatrix;
 
@@ -8,7 +9,23 @@ pub struct Tile {
 }
 
 impl Tile {
-  pub fn new(origin: (i32, i32), size: (i32, i32)) -> Self {
+  pub fn ortho(origin: (i32, i32), size: (i32, i32)) -> Self {
+
+    let a = (origin.0, origin.1);
+    let b = (origin.0 + size.0, origin.1);
+    let c = (origin.0, origin.1 + size.1);
+    let d = (origin.0 + size.0, origin.1 + size.1);
+
+    // Create a line using the iso fn
+    let l1 = Line::ortho(a, b);
+    let l2 = Line::ortho(a, c);
+    let l3 = Line::ortho(d, b);
+    let l4 = Line::ortho(d, c);
+
+    Tile { lines: (l1, l2, l3 ,l4) }
+  }
+
+  pub fn iso(origin: (i32, i32), size: (i32, i32)) -> Self {
 
     let a = (origin.0, origin.1);
     let b = (origin.0 + size.0, origin.1);
@@ -17,9 +34,9 @@ impl Tile {
 
     // Create a line using the iso fn
     let l1 = Line::iso(a, b);
-    let l2 =Line::iso(a, c);
-    let l3 =Line::iso(d, b);
-    let l4 =Line::iso(d, c);
+    let l2 = Line::iso(a, c);
+    let l3 = Line::iso(d, b);
+    let l4 = Line::iso(d, c);
 
     Tile { lines: (l1, l2, l3 ,l4) }
   }
